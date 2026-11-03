@@ -3,7 +3,6 @@ export const img = (id: string, w = 1600) =>
   id.startsWith('/') ? id : `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`
 
 export const WHATSAPP_NUMBER = '245956191086'
-export const WHATSAPP_DISPLAY = '+245 956 191 086'
 
 export const whatsappLink = (text: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`
