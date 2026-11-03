@@ -9,3 +9,4 @@ dist
 __pycache__/
 # Raw TikTok soundtracks from gallery-dl, unused by the site (names exceed Windows path limits)
 public/media/photos/
+.vercel
