@@ -1,0 +1,2 @@
+# Quennie
+Portuguese-language interior design studio site. Confirmed public TikTok bio: interior design, renovations, furniture manufacture, curtains and blinds; residential, commercial, hospitality and restaurants; Guinea-Bissau and Portugal. Linktree links to WhatsApp +245956191086, Instagram, Facebook and TikTok. Conversion: request a personalized quote through WhatsApp. Do not invent completed projects, clients, credentials, costs or delivery promises.

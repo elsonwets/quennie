@@ -1,0 +1,2 @@
+# Existing visual system
+Extend the approved linen / walnut / ivory identity. Cormorant Garamond display, Jost body. Named color tokens in src/styles.css remain authoritative. Premium editorial composition, large photographs, generous spacing, purposeful motion. Home opens with photographic Three.js curtains then reveals the header and copy. Inner pages show navigation immediately. Imagery from Unsplash is illustrative and must not be presented as Quennie project evidence. TikTok posts link to their original sources; social embeds load on request.
