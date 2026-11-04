@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { absolute, breadcrumbs, seo } from '~/seo'
 
-import { AmbientImage, Arrow, PageClosing } from '~/components/Editorial'
+import { Arrow } from '~/components/Editorial'
+import { SpatialHero, SpatialDepth, SpatialReveal, SpatialClosing, Lines, Reveal } from '~/components/Spatial'
 
 import { services } from '~/content'
 
@@ -38,18 +39,15 @@ const details = [
 ]
 
 function ServicesPage() {
-
-  return <main>
-
-    <section className="editorial-wrap service-intro"><h1 className="editorial-title">O seu espaço.<br /><em>A nossa forma<br />de o pensar.</em></h1><div className="service-intro-copy"><p>Design de interiores, mobiliário, cortinados e remodelações. Escolha uma intervenção ou pense connosco o conjunto.</p><a href="#design" className="editorial-link">Explorar os serviços <Arrow /></a></div></section>
-
-    <div className="service-spread"><AmbientImage image="/media/7673552471175875858-01.webp" alt="Estudo de interiores publicado pela Quennie" /></div>
-
-    <div className="editorial-wrap service-chapters">{services.map((service, index) => <section key={service.name} id={index === 0 ? 'design' : undefined} className="service-chapter"><div><h2 className="display italic">{service.name}</h2><p className="service-line">{details[index].line}</p></div><div><p className="editorial-body">{details[index].body}</p><ul className="service-inclusions">{details[index].items.map(item => <li key={item}>{item}</li>)}</ul><Link to="/orcamento" search={{ servico: service.name }} className="editorial-link">Falar sobre este serviço <Arrow /></Link>{index === 2 && <Link to="/cortinados" className="mt-6 block text-sm underline underline-offset-4">Explorar tecidos e pregas</Link>}</div></section>)}</div>
-
-    <section className="service-dark"><div className="editorial-wrap"><h2 className="display italic">Da casa ao espaço<br />que recebe os outros.</h2><p>Casas · Espaços comerciais · Hotelaria · Restauração</p></div></section><PageClosing />
-
+  return <main className="interior-page services-page">
+    <SpatialHero title="Uma visão." emphasis="Por inteiro." description="Design de interiores, mobiliário, cortinados e remodelações. Uma intervenção ou um conceito completo, pensado à sua medida." image="/media/7673552471175875858-01.webp" imageAlt="Estudo de interiores publicado pela Quennie" caption="Estudo de interiores · Publicação Quennie">
+      <a href="#design" className="spatial-text-link">Explorar os serviços <Arrow /></a>
+    </SpatialHero>
+    <nav className="service-index" aria-label="Áreas de intervenção">{services.map((service,i)=><a key={service.name} href={`#${i===0?'design':`service-${i}`}`}>{service.name}<Arrow /></a>)}</nav>
+    <div className="interior-chapters">{services.map((service,index)=><section key={service.name} id={index===0?'design':`service-${index}`} className="interior-service">
+      <SpatialReveal className="interior-service-copy"><h2>{service.name}</h2><p className="interior-service-line">{details[index].line}</p><p>{details[index].body}</p><ul>{details[index].items.map(item=><li key={item}>{item}</li>)}</ul><Link to="/orcamento" search={{servico:service.name}} className="spatial-text-link">Falar sobre este serviço <Arrow /></Link>{index===2&&<Link to="/cortinados" className="spatial-secondary-link">Explorar tecidos e pregas</Link>}</SpatialReveal>
+      <Reveal as="figure" kind="arch"><SpatialDepth><img src={service.image} alt={`Publicação Quennie: ${service.name}`} loading="lazy" /></SpatialDepth><figcaption>Publicação original da Quennie</figcaption></Reveal>
+    </section>)}</div>
+    <section className="interior-service-scope"><Lines lines={['Espaços para viver.', <em key="e">E para receber.</em>]} /><Reveal as="p">Casas · Escritórios · Hotelaria · Restauração</Reveal></section><SpatialClosing />
   </main>
-
 }
-

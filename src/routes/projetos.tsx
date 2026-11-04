@@ -2,10 +2,11 @@ import { MediaImage } from '~/components/MediaImage'
 import { absolute, breadcrumbs, seo, tiktokDate } from '~/seo'
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Arrow, PageClosing } from '~/components/Editorial'
+import { Arrow } from '~/components/Editorial'
 import { QuennieVideo } from '~/components/QuennieVideo'
 import media from '~/quennie-media.json'
 import { social } from '~/content'
+import { SpatialHero, SpatialReveal, SpatialClosing } from '~/components/Spatial'
 export const Route=createFileRoute('/projetos')({head:()=>seo({
   title:'Inspirações de interiores e bastidores · Quennie',
   description:'Salas, quartos, halls de entrada e cortinados: inspirações, vídeos e bastidores dos projetos de interiores da Quennie, na Guiné-Bissau e em Portugal.',
@@ -34,5 +35,6 @@ function MediaCard({post}:{post:(typeof media)[number]}){
 function JournalPage(){
  const [category,setCategory]=useState('Todos')
  const visible=media.filter(post=>category==='Todos'||post.category===category)
- return <main><section className="editorial-wrap journal-intro"><h1 className="editorial-title">Entre.<br /><em>Sinta-se em casa.</em></h1><div><p>Um passeio pelas ideias, pelos espaços e pelos bastidores da Quennie. Aqui estão as nossas publicações, com imagens e vídeos para descobrir ao seu ritmo.</p><a href={social.tiktok} target="_blank" rel="noopener noreferrer" className="editorial-link">Também estamos no TikTok <Arrow /></a></div></section><section className="editorial-wrap journal-content"><div className="journal-filters" aria-label="Filtrar publicações">{categories.map(label=><button key={label} type="button" aria-pressed={category===label} onClick={()=>setCategory(label)}>{label}</button>)}</div><p className="journal-image-note">Publicações originais da Quennie · {media.filter(p=>p.video).length} vídeos e {media.filter(p=>!p.video).reduce((total,p)=>total+p.images.length,0)} imagens para explorar.</p><div className="journal-grid">{visible.map(post=><MediaCard key={post.id} post={post}/>)}</div></section><PageClosing title="Gostou de alguma ideia? Vamos conversar." /></main>
+ return <main className="interior-page inspiration-page"><SpatialHero title="Entre." emphasis="Sinta-se em casa." description="Um passeio pelas ideias, pelos espaços e pelos bastidores da Quennie. Publicações originais para descobrir ao seu ritmo." image="/media/7673556834803846407-01.webp" imageAlt="Inspiração de interiores publicada pela Quennie" caption="O universo Quennie · Imagens e ideias"><a href="#publicacoes" className="spatial-text-link">Descobrir as publicações <Arrow /></a></SpatialHero>
+ <section className="editorial-wrap journal-content" id="publicacoes"><div className="journal-filter-bar"><div className="journal-filters" aria-label="Filtrar publicações">{categories.map(label=><button key={label} type="button" aria-pressed={category===label} onClick={()=>setCategory(label)}>{label}</button>)}</div><span role="status">{visible.length} publicações</span></div><p className="journal-image-note">Imagens, vídeos e detalhes originais da Quennie.</p><div className="journal-grid">{visible.map(post=><SpatialReveal key={post.id}><MediaCard post={post}/></SpatialReveal>)}</div><a href={social.tiktok} target="_blank" rel="noopener noreferrer" className="spatial-text-link">Continue a descobrir no TikTok <Arrow /></a></section><SpatialClosing title="Uma ideia que ficou?" emphasis="Vamos conversar." /></main>
 }

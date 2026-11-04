@@ -6,7 +6,6 @@ import { CurtainIntroProvider } from '~/components/CurtainIntro'
 import { SiteHeader } from '~/components/SiteHeader'
 import { SiteFooter } from '~/components/SiteFooter'
 import { WhatsAppButton } from '~/components/WhatsAppButton'
-import { Cursor } from '~/components/motion/Cursor'
 import { SmoothScroll } from '~/components/motion/SmoothScroll'
 import { FabricLayer } from '~/components/gl/FabricLayer'
 
@@ -45,14 +44,12 @@ function RootComponent() {
       <SmoothScroll />
       <SiteHeader />
       {/* Clears the fixed header. */}
-      <div className={pathname === '/' ? '' : 'pt-[6.5rem]'} id={pathname === '/' ? undefined : 'main-content'}>
+      <div className={pathname === '/' ? '' : 'page-offset'} id={pathname === '/' ? undefined : 'main-content'}>
         <Outlet />
       </div>
       <SiteFooter />
       <WhatsAppButton />
       <FabricLayer />
-      {pathname !== '/' && <Cursor />}
-      {pathname !== '/' && <div aria-hidden="true" className="grain" />}
       </CurtainIntroProvider>
     </RootDocument>
   )

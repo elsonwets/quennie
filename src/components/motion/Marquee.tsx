@@ -1,23 +1,27 @@
 import { useReducedMotion } from '~/hooks/useReducedMotion'
-import { motion, useAnimationFrame, useMotionValue, useScroll, useSpring, useTransform, useVelocity, wrap,  } from 'motion/react'
+import { motion, useAnimationFrame, useMotionValue, useScroll, useSpring, useTransform, useVelocity, wrap } from 'motion/react'
 import { useRef } from 'react'
 
-function PleatGlyph() {
+/** The same six-ray star that signs the home hero. */
+function StarGlyph() {
   return (
-    <svg viewBox="0 0 40 40" className="mx-[0.35em] inline-block size-[0.42em] align-middle text-cognac" aria-hidden="true">
-      <path d="M4 4c6 0 6 32 12 32S22 4 28 4s6 32 8 32" fill="none" stroke="currentColor" strokeWidth="3" />
+    <svg viewBox="0 0 60 60" className="marquee-glyph" aria-hidden="true" fill="none">
+      {[0, 30, 60, 90, 120, 150].map((a) => <path key={a} d="M30 2v56" stroke="currentColor" strokeWidth="1.6" transform={`rotate(${a} 30 30)`} />)}
     </svg>
   )
 }
 
-/** A line of type that drifts on its own and leans into the reader's scroll speed. */
-export function Marquee({ items, baseVelocity = -2.2 }: { items: string[]; baseVelocity?: number }) {
+/**
+ * A line of type that drifts on its own and leans into the reader's scroll speed.
+ * Decorative: the same words are always available as real content nearby.
+ */
+export function Marquee({ items, baseVelocity = -2.2, className = '' }: { items: string[]; baseVelocity?: number; className?: string }) {
   const reduce = useReducedMotion()
   const baseX = useMotionValue(0)
   const { scrollY } = useScroll()
   const velocity = useSpring(useVelocity(scrollY), { damping: 50, stiffness: 400 })
   const factor = useTransform(velocity, [-1500, 0, 1500], [-4, 0, 4], { clamp: false })
-  const skew = useTransform(velocity, [-2000, 2000], [6, -6])
+  const skew = useTransform(velocity, [-2000, 2000], [5, -5])
   const x = useTransform(baseX, (v) => `${wrap(-25, -50, v)}%`)
   const direction = useRef(1)
 
@@ -31,27 +35,12 @@ export function Marquee({ items, baseVelocity = -2.2 }: { items: string[]; baseV
     baseX.set(baseX.get() + move)
   })
 
-  const line = (
-    <>
-      {items.map((item) => (
-        <span key={item}>
-          {item}
-          <PleatGlyph />
-        </span>
-      ))}
-    </>
-  )
-
   return (
-    <div className="overflow-hidden py-6" aria-label={items.join(', ')}>
-      <motion.div
-        aria-hidden="true"
-        className="display flex whitespace-nowrap text-[clamp(3rem,9vw,9rem)] italic"
-        style={{ x, skewX: reduce ? 0 : skew }}
-      >
+    <div className={`spatial-marquee ${className}`} aria-hidden="true">
+      <motion.div className="spatial-marquee-track" style={{ x, skewX: reduce ? 0 : skew }}>
         {[0, 1, 2, 3].map((n) => (
-          <span key={n} className="block pr-[0.3em]">
-            {line}
+          <span key={n}>
+            {items.map((item) => <span key={item}>{item}<StarGlyph /></span>)}
           </span>
         ))}
       </motion.div>

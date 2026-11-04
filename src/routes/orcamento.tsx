@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { ColourPicker } from '~/components/ColourPicker'
 import { parseCurtainChoice, describeCurtainChoice } from '~/curtain-options'
 import { WhatsAppIcon } from '~/components/WhatsAppButton'
-import { RevealText } from '~/components/motion/Reveal'
+import { SpatialDepth } from '~/components/Spatial'
 import { services, whatsappLink, opacities, pleatStyles } from '~/content'
 type QuoteSearch = { servico?: string; nota?: string; config?: string }
 export const Route = createFileRoute('/orcamento')({
@@ -41,7 +41,7 @@ function Choice({
       type="button"
       aria-pressed={selected}
       onClick={onClick}
-      className={`rounded-full border px-5 py-3 text-left transition-colors ${
+      className={`quote-choice rounded-full border px-5 py-3 text-left transition-colors ${
         selected ? 'border-nogueira bg-nogueira text-linho' : 'border-nogueira/20 hover:border-nogueira/60'
       }`}
     >
@@ -78,17 +78,15 @@ function QuotePage() {
     .filter(Boolean)
     .join('\n')
   return (
-    <main className="editorial-wrap quote-page">
+    <main className="interior-page quote-page spatial-quote">
       <div className="quote-grid">
         <div className="quote-aside">
-          <RevealText as="h1" className="display text-[clamp(2.8rem,6vw,5.6rem)] italic">
-            Pedir orçamento
-          </RevealText>
+          <h1>Vamos dar forma<br /><em>ao seu espaço.</em></h1>
           <p className="mt-6 max-w-[44ch] text-lg leading-relaxed text-nogueira/75">
             Todos os projetos são orçamentados à medida. Responda a quatro perguntas e envie o
             pedido diretamente para o nosso WhatsApp.
           </p>
-          <img src="/images/hero-linen.webp" alt="Detalhe da textura do linho" className="quote-material" />
+          <SpatialDepth className="quote-material-object"><img src="/images/hero-linen.webp" alt="Detalhe da textura do linho" className="quote-material" /><span aria-hidden="true" /></SpatialDepth>
           <p className="mt-10 text-taupe">Prefere falar já?</p>
           <a
             href={whatsappLink('Olá Quennie, gostaria de falar sobre um orçamento.')}
@@ -99,7 +97,8 @@ function QuotePage() {
             <WhatsAppIcon /> Falar connosco no WhatsApp
           </a>
         </div>
-        <div>
+        <div className="quote-workspace">
+          <p className="quote-step-status" role="status">O seu pedido · Passo {step + 1} de 4</p>
           <ol className="mb-10 flex gap-2" aria-label="Progresso">
             {steps.map((label, i) => (
               <li key={label} className="flex-1">
@@ -116,7 +115,7 @@ function QuotePage() {
               initial={{ opacity: 0, x: reduce ? 0 : 24 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: reduce ? 0 : -24 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: reduce ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
               className="min-h-[300px]"
             >
               {step === 0 && (
