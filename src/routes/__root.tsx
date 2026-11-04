@@ -45,14 +45,14 @@ function RootComponent() {
       <SmoothScroll />
       <SiteHeader />
       {/* Clears the fixed header. */}
-      <div className="pt-[5.5rem]">
+      <div className={pathname === '/' ? '' : 'pt-[6.5rem]'} id={pathname === '/' ? undefined : 'main-content'}>
         <Outlet />
       </div>
       <SiteFooter />
       <WhatsAppButton />
       <FabricLayer />
-      <Cursor />
-      <div aria-hidden="true" className="grain" />
+      {pathname !== '/' && <Cursor />}
+      {pathname !== '/' && <div aria-hidden="true" className="grain" />}
       </CurtainIntroProvider>
     </RootDocument>
   )
@@ -71,3 +71,5 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
     </html>
   )
 }
+
+
