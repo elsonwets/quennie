@@ -8,6 +8,7 @@ import { parseCurtainChoice, describeCurtainChoice } from '~/curtain-options'
 import { WhatsAppIcon } from '~/components/WhatsAppButton'
 import { SpatialDepth } from '~/components/Spatial'
 import { services, whatsappLink, opacities, pleatStyles } from '~/content'
+import { submitLead } from '~/server/lead'
 type QuoteSearch = { servico?: string; nota?: string; config?: string }
 export const Route = createFileRoute('/orcamento')({
   validateSearch: (search: Record<string, unknown>): QuoteSearch => ({
@@ -63,9 +64,24 @@ function QuotePage() {
   const [timing, setTiming] = useState('')
   const [name, setName] = useState('')
   const [message, setMessage] = useState(search.nota ? `Preferências: ${search.nota}. ` : '')
+  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
+  const [website, setWebsite] = useState('')
+  const [sent, setSent] = useState(false)
   const toggleService = (s: string) =>
     setChosen((list) => (list.includes(s) ? list.filter((x) => x !== s) : [...list, s]))
-  const canContinue = [space !== '', chosen.length > 0, country !== '', name.trim() !== ''][step]
+  const phoneOk = phone.replace(/\D/g, '').length >= 6
+  const canContinue = [space !== '', chosen.length > 0, country !== '', name.trim() !== '' && phoneOk][step]
+  const curtainNotes = chosen.includes('Cortinados & estores')
+    ? [hasPreference && describeCurtainChoice(curtainChoice), (width || height) && `Medidas aproximadas: ${width || 'por medir'} × ${height || 'por medir'} cm.`].filter(Boolean).join(' ')
+    : ''
+  // Also keeps the request in the studio's backoffice. Not awaited: WhatsApp opens at once
+  // and stays the way the conversation continues, even if saving fails.
+  const saveRequest = () => {
+    if (!canContinue || sent) return
+    setSent(true)
+    submitLead({ data: { name, phone, email, space, services: chosen, country, timing, message, preferences: curtainNotes || undefined, website } }).catch(() => {})
+  }
   const summary = [
     `Olá Quennie, o meu nome é ${name.trim()}.`,
     `Gostaria de um orçamento para: ${chosen.join(', ')}.`,
@@ -172,6 +188,35 @@ function QuotePage() {
                       className="w-full border-b border-nogueira/30 bg-transparent py-3 text-lg outline-none focus:border-cognac"
                     />
                   </label>
+                  <div className="grid gap-6 sm:grid-cols-2">
+                    <label className="block">
+                      <span className="mb-2 block text-taupe">WhatsApp ou telefone</span>
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        autoComplete="tel"
+                        inputMode="tel"
+                        required
+                        maxLength={40}
+                        placeholder="+245 …"
+                        className="w-full border-b border-nogueira/30 bg-transparent py-3 text-lg outline-none focus:border-cognac"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="mb-2 block text-taupe">Email (opcional)</span>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        autoComplete="email"
+                        maxLength={160}
+                        className="w-full border-b border-nogueira/30 bg-transparent py-3 text-lg outline-none focus:border-cognac"
+                      />
+                    </label>
+                  </div>
+                  {/* Left empty by people; bots fill it and their request is ignored. */}
+                  <input type="text" name="website" value={website} onChange={(e) => setWebsite(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px] h-px w-px opacity-0" />
                   <label className="block">
                     <span className="mb-2 block text-taupe">Conte-nos mais sobre o projeto (opcional)</span>
                     <textarea
@@ -203,6 +248,7 @@ function QuotePage() {
             ) : (
               <a
                 href={canContinue ? whatsappLink(summary) : undefined}
+                onClick={saveRequest}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-disabled={!canContinue}
@@ -216,7 +262,12 @@ function QuotePage() {
             )}
           </div>
           {step === steps.length - 1 && !canContinue && (
-            <p className="mt-3 text-sm text-taupe">Indique o seu nome para enviar o pedido.</p>
+            <p className="mt-3 text-sm text-taupe">Indique o seu nome e o seu número para enviar o pedido.</p>
+          )}
+          {sent && (
+            <p role="status" className="mt-3 text-sm text-palma">
+              Pedido recebido. Respondemos pelo WhatsApp com a maior brevidade.
+            </p>
           )}
         </div>
       </div>
